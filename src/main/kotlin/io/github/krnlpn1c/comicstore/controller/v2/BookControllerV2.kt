@@ -3,7 +3,7 @@ package io.github.krnlpn1c.comicstore.controller.v2
 import io.github.krnlpn1c.comicstore.dto.BookDto
 import io.github.krnlpn1c.comicstore.dto.request.BookCreationRequest
 import io.github.krnlpn1c.comicstore.dto.response.BooksResponse
-import io.github.krnlpn1c.comicstore.service.BookService
+import io.github.krnlpn1c.comicstore.service.v2.BookServiceV2
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v2/books")
 class BookControllerV2(
-    private val bookService: BookService
+    private val bookServiceV2: BookServiceV2
 ) {
 
     @GetMapping
@@ -25,13 +25,13 @@ class BookControllerV2(
         @RequestParam size: Int = 20,
         @RequestParam page: Int = 0
     ): BooksResponse {
-        return bookService.books(name, author, character, size, page)
+        return bookServiceV2.books(name, author, character, size, page)
     }
 
     @PostMapping
     fun createBook(
         @RequestBody request: BookCreationRequest
     ): BookDto {
-        return bookService.createBook(request)
+        return bookServiceV2.createBook(request)
     }
 }

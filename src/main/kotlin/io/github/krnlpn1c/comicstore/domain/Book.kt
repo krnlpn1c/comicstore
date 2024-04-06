@@ -11,7 +11,7 @@ const val BOOKS_QUERY = "books_query"
 @NamedQuery(name = BOOKS_QUERY, query = """
         SELECT b FROM Book b
             JOIN b.authors a 
-            JOIN b.characters ch 
+            LEFT JOIN b.characters ch 
         WHERE (:bookName IS NULL OR lower(b.name) LIKE :bookName)
             AND
              (:authorName IS NULL OR lower(a.name) LIKE :authorName)

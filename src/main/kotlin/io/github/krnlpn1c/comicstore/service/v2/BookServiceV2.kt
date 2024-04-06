@@ -1,32 +1,29 @@
-package io.github.krnlpn1c.comicstore.service
+package io.github.krnlpn1c.comicstore.service.v2
 
+import io.github.krnlpn1c.comicstore.client.RatingRestClient
 import io.github.krnlpn1c.comicstore.domain.Author
 import io.github.krnlpn1c.comicstore.domain.Book
 import io.github.krnlpn1c.comicstore.domain.Chara
 import io.github.krnlpn1c.comicstore.dto.BookDto
+import io.github.krnlpn1c.comicstore.dto.client.RatingQueryDto
 import io.github.krnlpn1c.comicstore.dto.request.BookCreationRequest
 import io.github.krnlpn1c.comicstore.dto.response.BooksResponse
 import io.github.krnlpn1c.comicstore.dto.response.MetaData
 import io.github.krnlpn1c.comicstore.mapper.toDto
 import io.github.krnlpn1c.comicstore.repository.BookRepository
+import io.github.krnlpn1c.comicstore.service.AuthorService
+import io.github.krnlpn1c.comicstore.service.CharacterService
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class BookService(
+class BookServiceV2(
     private val authorService: AuthorService,
     private val characterService: CharacterService,
-    private val bookRepository: BookRepository
+    private val bookRepository: BookRepository,
+    private val ratingRestClient: RatingRestClient
 ) {
-    fun booksList(name: String?,
-              author: String?,
-              character: String?,
-              size: Int,
-              page: Int): List<BookDto> {
-        val books = bookRepository.booksPageQuery(name, author, character, size, page)
-        return books.map { it.toDto() }
-    }
-
     fun books(name: String?,
               author: String?,
               character: String?,
@@ -39,7 +36,14 @@ class BookService(
             books.removeLast()
         }
 
-        return BooksResponse(books.map { it.toDto() }, MetaData(hasNext))
+        val ratingByBookId = if (books.isNotEmpty()) {
+            runBlocking { ratingRestClient.queryBooksRating(RatingQueryDto(books.map(Book::id))) }
+                .booksRating.associate { it.bookId to it.rating }
+        } else {
+            emptyMap()
+        }
+
+        return BooksResponse(books.map { it.toDto(ratingByBookId[it.id]) }, MetaData(hasNext))
     }
 
     @Transactional

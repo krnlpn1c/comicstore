@@ -12,7 +12,7 @@ Simple CRUD service that covers various Spring Boot application development prac
    - ⏳ EntityGraph
 3. Tests
    - ✅ Integration tests with containers
-   - ⏳ Unit tests
+   - ✅ Unit tests
    - ⏳ Tracking queries count in tests
 4. Pagination API
    - ✅ Offset + Limit

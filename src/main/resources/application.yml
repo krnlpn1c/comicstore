@@ -12,8 +12,12 @@ spring:
       hibernate.id.new_generator_mappings: true
       hibernate.generate_statistics: true
       hibernate.show_sql: true
-      hibernate.format_sql: false
+      hibernate.format_sql: true
       hibernate.jdbc.lob.non_contextual_creation: true
     open-in-view: false
   liquibase:
     change-log: classpath:liquibase/changelog.xml
+application:
+  client:
+    rating-rest:
+      base-url: https://not-really-existing-service:8080

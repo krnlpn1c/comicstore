@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface BookRepository: JpaRepository<Book, Int>, BookPagingRepository
+interface BookRepository: JpaRepository<Book, Int>, BookPagingRepository {
+    fun findAllByAuthors_Id(authorId: Int): List<Book>
+}
